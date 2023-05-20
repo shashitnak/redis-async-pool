@@ -102,7 +102,10 @@ impl RedisConnectionManager {
 }
 
 #[async_trait]
-impl deadpool::managed::Manager<RedisConnection, redis::RedisError> for RedisConnectionManager {
+impl deadpool::managed::Manager for RedisConnectionManager {
+    type Type = RedisConnection;
+    type Error = redis::RedisError;
+
     async fn create(&self) -> Result<RedisConnection, redis::RedisError> {
         Ok(RedisConnection {
             actual: self.client.get_async_connection().await?,
